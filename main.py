@@ -1,11 +1,13 @@
 from random import randint
 from PIL import Image, ImageDraw, ImageChops, ImageStat
+import sys
 
+# CONSTANTS
 POPULATION_SIZE = 10 # NUMBER OF INDIVIDUALS IN THE POPULATION
 ITERATIONS = 100000 # NUMBER OF ITERATIONS
 NUM_OF_MUTANTS = 5 # NUMBER OF PRODUCED MUTANTS FROM ONE INDIVIDUAL
 
-# CALCULATES ROOT-MEAN-SQUARE DEVIATION
+# CALCULATES MEAN SQUARED ERROR
 def fitness(input_image, candidate):
     diff = ImageChops.difference(input_image, candidate) # GETTING DIFFERENCE BETWEEN IMAGES
     root_mean_square = ImageStat.Stat(diff).rms # CALCULATING ROOT-MEAN-SQUARE OF THE DIFFERENCE
@@ -55,9 +57,14 @@ def evolution(input_image):
     return population[0][1] # RETURNING THE BEST INDIVIDUAL
 
 def main():
-    input_image = Image.open('chert.jpg') 
-    output_image = evolution(input_image)
-    output_image.save('chert2.jpg')
+    if len(sys.argv) == 2:
+        input_file_name = sys.argv[1]
+        ext = input_file_name.split('.')[1]
+        input_image = Image.open(input_file_name) 
+        output_image = evolution(input_image)
+        output_image.save(f'output.{ext}')
+    else:
+        print(f'To run please use the following command:\npython3 main.py <input_file_name.ext>')
 
 if __name__ == '__main__':
     main()
